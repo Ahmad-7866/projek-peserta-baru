@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tambah Peserta</title>
+</head>
+<body>
+  <h1>Tambah Peserta</h1>
+  <form id="form-peserta">
+    <input type="text" name="name" placeholder="Nama" required /><br/>
+    <select name="program" required>
+      <option value="">Pilih Program</option>
+      <option value="Qurban Lembu">Qurban Lembu</option>
+      <option value="Qurban Unta">Qurban Unta</option>
+      <option value="Aqiqah Lembu">Aqiqah Lembu</option>
+      <option value="Aqiqah Unta">Aqiqah Unta</option>
+    </select><br/>
+    <input type="text" name="country" placeholder="Negara" required /><br/>
+    <input type="text" name="year" value="2025" required /><br/>
+    <input type="text" name="url" placeholder="URL Gambar/Video" /><br/>
+    <input type="text" name="pam" placeholder="NOMBOR PAM (jika ada)" /><br/>
+    <button type="submit">Hantar</button>
+  </form>
+  <p id="status"></p>
+  <script>
+    const form = document.getElementById('form-peserta');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      try {
+        const res = await fetch('/api/tambah-peserta', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        document.getElementById('status').textContent = result.success
+          ? '✅ Berjaya tambah peserta!' : '❌ Gagal tambah peserta.';
+        if (result.success) form.reset();
+      } catch (err) {
+        document.getElementById('status').textContent = '❌ Gagal sambung ke sistem.';
+      }
+    });
+  </script>
+</body>
+</html>
