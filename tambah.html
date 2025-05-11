@@ -53,8 +53,7 @@
       try {
         const res = await fetch('https://script.google.com/macros/s/AKfycbyZ32xon5wEu16N_CVKaMy6_wCTES3Ltx79v82cl84dJtI-R6W9HKngMr1aVpYdCYo/exec', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+          body: new FormData(form)
         });
 
         const json = await res.json();
