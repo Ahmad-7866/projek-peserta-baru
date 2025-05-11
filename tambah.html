@@ -1,26 +1,72 @@
-<script>
-  const form = document.getElementById('form-peserta');
-  const statusText = document.getElementById('status');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form));
-    statusText.textContent = '⏳ Sedang menghantar...';
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tambah Peserta</title>
+</head>
+<body>
+  <h1>Tambah Peserta</h1>
+  <form id="form-peserta">
+    <label>Nama:
+      <input type="text" name="name" placeholder="Nama" required />
+    </label><br/><br/>
 
-    try {
-      const res = await fetch('https://script.google.com/macros/s/AKfycbwHFL8XYB4Hi-PzXVZ3a1opJ7Xl07oA5CxJkB9EZAhHrUOVVKhS_hn3ezkMXhkfAlR4/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
+    <label>Program:
+      <select name="program" required>
+        <option value="">Pilih Program</option>
+        <option value="Qurban Lembu">Qurban Lembu</option>
+        <option value="Qurban Unta">Qurban Unta</option>
+        <option value="Aqiqah Lembu">Aqiqah Lembu</option>
+        <option value="Aqiqah Unta">Aqiqah Unta</option>
+      </select>
+    </label><br/><br/>
 
-      const result = await res.json();
-      statusText.textContent = result.success
-        ? '✅ Berjaya tambah peserta!'
-        : '❌ Gagal tambah peserta.';
-      if (result.success) form.reset();
-    } catch (err) {
-      statusText.textContent = '❌ Gagal sambung ke sistem.';
-    }
-  });
-</script>
+    <label>Negara:
+      <input type="text" name="country" placeholder="Negara" required />
+    </label><br/><br/>
+
+    <label>Tahun:
+      <input type="text" name="year" value="2025" required />
+    </label><br/><br/>
+
+    <label>URL Gambar/Video:
+      <input type="text" name="url" placeholder="https://..." />
+    </label><br/><br/>
+
+    <label>NOMBOR PAM (jika ada):
+      <input type="text" name="pam" placeholder="Contoh: PAM001" />
+    </label><br/><br/>
+
+    <button type="submit">Hantar</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById('form-peserta');
+    const statusText = document.getElementById('status');
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      statusText.textContent = '⏳ Menghantar...';
+
+      try {
+        const res = await fetch('https://script.google.com/macros/s/AKfycbwHFL8XYB4Hi-PzXVZ3a1opJ7Xl07oA5CxJkB9EZAhHrUOVVKhS_hn3ezkMXhkfAlR4/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        });
+
+        const json = await res.json();
+        statusText.textContent = json.success
+          ? '✅ Berjaya tambah peserta!'
+          : '❌ Gagal tambah peserta.';
+        if (json.success) form.reset();
+      } catch (err) {
+        statusText.textContent = '❌ Gagal sambung ke sistem.';
+      }
+    };
+  </script>
+</body>
+</html>
